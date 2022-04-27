@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
             alignment: Alignment.topCenter,
             child: Padding(
               padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.12),
-              child: createText(context, weather.date.day.toString() + "/" + weather.date.month.toString() + "/" + weather.date.year.toString(), Color.fromARGB(255, 169, 169, 169), FontWeight.normal, 0.025)
+              child: createText(context, weather.sunrise.toString(), Color.fromARGB(255, 169, 169, 169), FontWeight.normal, 0.025)
             ),
           ),
 
@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   buildCurrentWeatherInformation(context, "Temp", weather.temperature.round().toString() + "°"),
                   buildCurrentWeatherInformation(context, "Wind", weather.windSpeed.round().toString() + "km/h"),
-                  buildCurrentWeatherInformation(context, "Humadity", weather.humidity.toString() + "%")
+                  buildCurrentWeatherInformation(context, "Humadity", "75%")
                 ],
               ),
             ),
