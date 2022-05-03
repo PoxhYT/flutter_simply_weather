@@ -16,7 +16,11 @@ class WeatherService {
     String city = "Wedel";
     String apiKey = "18873d940eaa6bb553086427aadea343";
 
-    var url = Uri.parse("https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$apiKey&units=metric");
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    var lat = position.latitude;
+    var lon = position.longitude;
+
+    var url = Uri.parse("https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$apiKey&units=metric");
     var response = await http.post(url);
     var jsonWeatherResponse = jsonDecode(response.body);
     
