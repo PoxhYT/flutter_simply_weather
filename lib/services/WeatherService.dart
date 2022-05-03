@@ -1,14 +1,16 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, unused_local_variable
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 
 import '../models/Weather.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:geolocator/geolocator.dart';
+
 class WeatherService {
+
   static Future getCurrentWeather() async {
     Weather? weather;
     String city = "Wedel";
@@ -17,13 +19,6 @@ class WeatherService {
     var url = Uri.parse("https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$apiKey&units=metric");
     var response = await http.post(url);
     var jsonWeatherResponse = jsonDecode(response.body);
-
-    List<Weather> weeklyWeatherList = await weeklyForecast(city);
-
-    for (var i = 0; i < weeklyWeatherList.length; i++) {
-        var item = weeklyWeatherList[i];
-        debugPrint(item.temperature.toString());
-    }
     
     if (response.statusCode == 200) {
 
@@ -48,10 +43,34 @@ class WeatherService {
     return weather;
   } 
 
-  static Future weeklyForecast(String city) async {
+  static Future getCurrentCity() async {
+    String? city = "";
     String apiKey = "18873d940eaa6bb553086427aadea343";
 
-    var urlDailyForecast = Uri.parse("https://api.openweathermap.org/data/2.5/onecall?lat=33.44&lon=-94.04&exclude=hourly&appid=$apiKey&units=metric");
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    var lat = position.latitude;
+    var lon = position.longitude;
+
+    var url = Uri.parse("https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$apiKey&units=metric");
+    var response = await http.post(url);
+    var jsonWeatherResponse = jsonDecode(response.body);
+    
+    if (response.statusCode == 200) {
+      city = jsonWeatherResponse["name"];
+    } else {
+      debugPrint("BRUH");
+    }
+    return city;
+  }
+
+  static Future weeklyForecast() async {
+    String apiKey = "18873d940eaa6bb553086427aadea343";
+
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    var lat = position.latitude;
+    var lon = position.longitude;
+
+    var urlDailyForecast = Uri.parse("https://api.openweathermap.org/data/2.5/onecall?lat=$lat&lon=$lon&exclude=hourly&appid=$apiKey&units=metric");
     var responseDailyForecast = await http.get(urlDailyForecast);
     var jsonWeatherResponse = jsonDecode(responseDailyForecast.body);
 
@@ -66,20 +85,18 @@ class WeatherService {
       var weatherIcon = item["weather"][0]["icon"];
       var humidity = item["humidity"];
       var temperature = item["temp"]["max"];
-      var minimumTemperature = item["temp"]["min"];
-      var maximumTemperature = item["temp"]["max"];
+      var minimumTemperature = item["temp"]["min"].toDouble();
+      var maximumTemperature = item["temp"]["max"].toDouble();
       var windSpeed = item["wind_speed"];
       var sunset = item["sunset"];
       var sunrise = item["sunrise"];
       var date = item["dt"];
 
-      Weather weatherItem = Weather.fromJson(city, weatherStatus, weatherDescription, weatherIcon, humidity, temperature, minimumTemperature, 
+      Weather weatherItem = Weather.fromJson("city", weatherStatus, weatherDescription, weatherIcon, humidity, temperature, minimumTemperature, 
       maximumTemperature, windSpeed, sunset, sunrise, date);
 
       if (!weeklyWeatherForecastList.contains(weatherItem)) {
         weeklyWeatherForecastList.add(weatherItem); 
-        debugPrint("Added item!");
-        debugPrint("---------------");
       }
     }
     return weeklyWeatherForecastList;

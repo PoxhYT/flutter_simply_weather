@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_simply_weather/models/Weather.dart';
@@ -26,7 +25,7 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: FutureBuilder(
           builder: (context, snapshot) {
-            if (snapshot != null) {
+            if (snapshot.data != null) {
               Weather _weather = snapshot.data as Weather; 
               if (_weather == null) {
                 return Text("Error getting weather");
@@ -53,7 +52,17 @@ class _HomePageState extends State<HomePage> {
             alignment: Alignment.topCenter,
             child: Padding(
               padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05),
-              child: createText(context, weather.city, Colors.white, FontWeight.bold, 0.04),
+              child: FutureBuilder(
+                builder: (context, snapshot) {
+                  if (snapshot.data != null) {
+                    String city = snapshot.data.toString();
+                    return createText(context, city, Colors.white, FontWeight.bold, 0.04);
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+                future: WeatherService.getCurrentCity(),
+              ),
             ),
           ),
 
@@ -102,12 +111,12 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  createText(context, "Today", Color.fromARGB(255, 255, 255, 255), FontWeight.w200, 0.026),
+                  createText(context, "Weekly", Color.fromARGB(255, 255, 255, 255), FontWeight.w200, 0.026),
                   Padding(
                     padding: EdgeInsets.only(
                       right: MediaQuery.of(context).size.width * 0.05 
                     ),
-                    child: createText(context, "View weekly forecast", Color.fromARGB(255, 4, 125, 255), FontWeight.w200, 0.020),
+                    child: createText(context, "View full forecast", Color.fromARGB(255, 4, 125, 255), FontWeight.w200, 0.020),
                   )
                 ],
               ),
@@ -123,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: FutureBuilder(
                       builder: (context, snapshot) {
-                        if (snapshot != null) {
+                        if (snapshot.data != null) {
                           List<Weather> weeklyForecastList = snapshot.data as List<Weather>;
 
                           return ListView.builder(
@@ -139,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                           return CircularProgressIndicator();
                         }
                       },
-                      future: WeatherService.weeklyForecast("wedel"),
+                      future: WeatherService.weeklyForecast(),
                     ),
                   ),
                 ],

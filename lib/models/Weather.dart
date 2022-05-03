@@ -31,7 +31,7 @@ class Weather {
       required this.date});
 
   factory Weather.fromJson(String city, String weatherStatus, String weatherDescription, 
-          String weatherIcon, double humidity, double temperature, double minimumTemperature, double maximumTemperature, 
+          String weatherIcon, int humidity, double temperature, double minimumTemperature, double maximumTemperature, 
           double windSpeed, int sunset, int sunrise, int date) {    
 
     return Weather(
