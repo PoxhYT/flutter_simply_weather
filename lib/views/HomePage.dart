@@ -77,11 +77,19 @@ class _HomePageState extends State<HomePage> {
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
+              child: createText(context, weather.weatherDescription, Color.fromARGB(255, 169, 169, 169), FontWeight.normal, 0.025)
+            ),
+          ),
+
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
               padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.21),
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.3,
                 width: MediaQuery.of(context).size.width * 0.85,  
-                child: Image.network("https://i.ibb.co/89x8YH1/27.png"),
+                child: Image.network(getCurrentWeatherIcon(weather.weatherDescription)),
               ),
             ),
           ),
@@ -95,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   buildCurrentWeatherInformation(context, weather.windSpeed.round().toString() + "km/h", "Wind", "https://i.ibb.co/L6ZB9yS/6.png"),
                   buildCurrentWeatherInformation(context, weather.humidity.toString() + "%", "Humidity", "https://i.ibb.co/Hh0zHk0/4.png"),
-                  buildCurrentWeatherInformation(context, weather.temperature.round().toString() + "°C", "Temp", "https://i.ibb.co/D1rXr3W/8.png")
+                  buildCurrentWeatherInformation(context, weather.temperature.round().toString() + "°C", "Temp", getCurrentWeatherIcon(weather.weatherDescription))
                 ],
               ),
             ),
@@ -140,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                             itemCount: weeklyForecastList.length,
                             itemBuilder: (context, index) {
                               Weather weather = weeklyForecastList[index];
-                              return buildHourlyForecast(context, weather.date, weather.maximumTemperature.round().toString(), weather.minimumTemperature.round().toString());
+                              return buildHourlyForecast(context, weather.date, weather.maximumTemperature.round().toString(), weather.minimumTemperature.round().toString(), weather.weatherDescription);
                             }
                           );
 
@@ -190,7 +198,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildHourlyForecast(BuildContext context, DateTime date, String maxTemp, String minTemp) {
+  Widget buildHourlyForecast(BuildContext context, DateTime date, String maxTemp, String minTemp, String weatherDescription) {
     return Padding(
       padding: EdgeInsets.only(
         right: MediaQuery.of(context).size.width * 0.05,
@@ -238,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                 child: Container(
                 width: MediaQuery.of(context).size.width * 0.2,
                 height: MediaQuery.of(context).size.height * 0.07,
-                child: Image.network("https://i.ibb.co/D1rXr3W/8.png"),
+                child: Image.network(getCurrentWeatherIcon(weatherDescription)),
               )
             ),
 
@@ -293,5 +301,81 @@ class _HomePageState extends State<HomePage> {
         date.day.toString() +
         ". " +
         json.decode(monthData)['${date.month}'];
+  }
+
+  String getCurrentWeatherIcon(String description) {
+    String icon = "";
+    switch(description) { 
+
+      //Check for cloud description
+      case "few clouds": { 
+        icon = "https://i.ibb.co/NN4MVVk/27.png";
+      } 
+      break; 
+      case "scattered clouds": { 
+        icon = "https://i.ibb.co/4sKrY09/35.png";
+      } 
+      break; 
+      case "broken clouds": { 
+        icon = "https://i.ibb.co/NN4MVVk/27.png";
+      } 
+      break; 
+      case "overcast clouds": { 
+        icon = "https://i.ibb.co/NN4MVVk/27.png";
+      } 
+      break; 
+      case "clear sky": { 
+        icon = "https://i.ibb.co/527cW8x/26.png";
+      } 
+      break;
+
+      //Check for rain description
+      case "light rain": { 
+        icon = "https://i.ibb.co/wJJ1YPf/8.png";
+      } 
+      break; 
+      case "moderate rain": { 
+        icon = "https://i.ibb.co/4sKrY09/35.png";
+      } 
+      break; 
+      case "heavy intensity rain": { 
+        icon = "https://i.ibb.co/NN4MVVk/27.png";
+      } 
+      break; 
+      case "very heavy rain": { 
+        icon = "https://i.ibb.co/NN4MVVk/27.png";
+      } 
+      break;
+      case "extreme rain": { 
+        icon = "https://i.ibb.co/NN4MVVk/27.png";
+      } 
+      break; 
+      case "freezing rain": { 
+        icon = "https://i.ibb.co/4sKrY09/35.png";
+      } 
+      break; 
+      case "light intensity shower rain": { 
+        icon = "https://i.ibb.co/NN4MVVk/27.png";
+      } 
+      break; 
+      case "shower rain": { 
+        icon = "https://i.ibb.co/NN4MVVk/27.png";
+      } 
+      break;
+      case "heavy intensity shower rain": { 
+        icon = "https://i.ibb.co/NN4MVVk/27.png";
+      } 
+      break; 
+      case "ragged shower rain": { 
+        icon = "https://i.ibb.co/NN4MVVk/27.png";
+      } 
+      break;
+          
+      default: { 
+          //statements;  
+      }
+      break; 
+    }
+    return icon; 
   }
 }
