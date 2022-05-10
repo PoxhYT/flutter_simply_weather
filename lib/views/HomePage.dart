@@ -1,10 +1,11 @@
-// ignore_for_file: prefer_const_constructors, unused_import, avoid_web_libraries_in_flutter, avoid_print, non_constant_identifier_names, unused_local_variable, unnecessary_null_comparison, prefer_const_declarations, sized_box_for_whitespace, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, unused_import, avoid_web_libraries_in_flutter, avoid_print, non_constant_identifier_names, unused_local_variable, unnecessary_null_comparison, prefer_const_declarations, sized_box_for_whitespace, prefer_const_literals_to_create_immutables, avoid_init_to_null
 
 import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_simply_weather/models/Weather.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
 import '../services/WeatherService.dart';
@@ -17,6 +18,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  Position? position = null;
+
+  getLocation() async {
+    position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  }
+  
+  @override
+  void initState() {
+    getLocation();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                     return CircularProgressIndicator();
                   }
                 },
-                future: WeatherService.getCurrentCity(),
+                future: WeatherService.getCurrentCity(position!),
               ),
             ),
           ),
@@ -119,12 +132,12 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  createText(context, "Weekly", Color.fromARGB(255, 255, 255, 255), FontWeight.w200, 0.026),
+                  createText(context, "Weekly", Color.fromARGB(255, 255, 255, 255), FontWeight.normal, 0.026),
                   Padding(
                     padding: EdgeInsets.only(
                       right: MediaQuery.of(context).size.width * 0.05 
                     ),
-                    child: createText(context, "View full forecast", Color.fromARGB(255, 4, 125, 255), FontWeight.w200, 0.020),
+                    child: createText(context, "View full forecast", Color.fromARGB(255, 4, 125, 255), FontWeight.normal, 0.020),
                   )
                 ],
               ),
@@ -156,7 +169,7 @@ class _HomePageState extends State<HomePage> {
                           return CircularProgressIndicator();
                         }
                       },
-                      future: WeatherService.weeklyForecast(),
+                      future: WeatherService.weeklyForecast(position!),
                     ),
                   ),
                 ],
@@ -192,7 +205,7 @@ class _HomePageState extends State<HomePage> {
             child: Image.network(imageLink),
           ),
           createText(context, value, Color.fromARGB(255, 212, 209, 209), FontWeight.bold, 0.02) ,
-          createText(context, title, Color.fromARGB(255, 200, 196, 196), FontWeight.w200, 0.02) 
+          createText(context, title, Color.fromARGB(255, 200, 196, 196), FontWeight.normal, 0.02) 
         ],
       ),
     );

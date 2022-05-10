@@ -47,11 +47,10 @@ class WeatherService {
     return weather;
   } 
 
-  static Future getCurrentCity() async {
+  static Future getCurrentCity(Position position) async {
     String? city = "";
     String apiKey = "18873d940eaa6bb553086427aadea343";
 
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     var lat = position.latitude;
     var lon = position.longitude;
 
@@ -67,10 +66,9 @@ class WeatherService {
     return city;
   }
 
-  static Future weeklyForecast() async {
+  static Future weeklyForecast(Position position) async {
     String apiKey = "18873d940eaa6bb553086427aadea343";
 
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     var lat = position.latitude;
     var lon = position.longitude;
 
