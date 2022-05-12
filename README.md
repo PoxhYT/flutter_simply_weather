@@ -1,2 +1,2 @@
 # flutter_simply_weather
- A weather build with flutter
+IOS IPA Link: https://mega.nz/file/8SI01CLD#EFK3JXWLKuiZnHzE5QK3jCKUM8N0mMHMemcrAqkuzks
